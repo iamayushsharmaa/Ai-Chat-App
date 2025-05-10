@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:geminiai/models/chat_model.dart';
 
-class SpaceRepo {
+class ChatRepository {
   static chatTextGenerationRepo(List<ChatModel> previousMessage) async {
     Dio dio = Dio();
 
