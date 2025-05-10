@@ -4,6 +4,8 @@ import 'package:geminiai/bloc/bloc.dart';
 import 'package:geminiai/bloc/state.dart';
 import 'package:geminiai/models/chat_model.dart';
 
+import '../bloc/event.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -54,7 +56,22 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
-                    Expanded(child: ListView()),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: message.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: const EdgeInsets.only(top: 12),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.amber.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(message[index].parts.first.text),
+                          );
+                        },
+                      ),
+                    ),
                     Container(
                       height: 120,
                       padding: const EdgeInsets.symmetric(
@@ -66,7 +83,9 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Expanded(
                             child: TextField(
+                              controller: textEditingController,
                               decoration: InputDecoration(
+                                hintText: 'Ask something...',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100),
                                 ),
@@ -82,13 +101,26 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          CircleAvatar(
-                            radius: 32,
-                            backgroundColor: Colors.white,
+                          InkWell(
+                            onTap: () {
+                              if (textEditingController.text.isNotEmpty) {
+                                String text = textEditingController.text;
+                                textEditingController.clear();
+                                chatBloc.add(
+                                  ChatGenerateNewTextMessageEvent(
+                                    inputMessage: text,
+                                  ),
+                                );
+                              }
+                            },
                             child: CircleAvatar(
-                              radius: 30,
-                              backgroundColor: Theme.of(context).primaryColor,
-                              child: Icon(Icons.send, color: Colors.white),
+                              radius: 32,
+                              backgroundColor: Colors.white,
+                              child: CircleAvatar(
+                                radius: 30,
+                                backgroundColor: Theme.of(context).primaryColor,
+                                child: Icon(Icons.send, color: Colors.white),
+                              ),
                             ),
                           ),
                         ],
